@@ -1,13 +1,20 @@
-#include <unistd.h>
+#include "main.h"
 
 /**
- * _putchar - writes the character c to stdout
- * @c: The character to print
- *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
+ * main - entry point of program
+ * Return: Always returns 0 (success)
  */
-int _putchar(char c)
+int main(void)
 {
-	return (write(1, &c, 1));
+	int i;
+	int ascii_array[8] = {95, 112, 117, 116, 99, 104, 97, 114};
+
+	for (i = 0; i < 8; i++)
+	{
+		_putchar(ascii_array[i]);
+	}
+
+	_putchar(10);
+
+	return (0);
 }
