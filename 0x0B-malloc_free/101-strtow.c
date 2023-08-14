@@ -1,87 +1,77 @@
-#include "main.h"
 #include <stdlib.h>
+#include "main.h"
 
 /**
- * strtow - splits string into words
- * @str: string
- * Return: pointer to array of words
+ * count_word - helper function to count the number of words in a string
+ * @s: string to evaluate
+ *
+ * Return: number of words
  */
+int count_word(char *s)
+{
+	int flag, c, w;
 
+	flag = 0;
+	w = 0;
+
+	for (c = 0; s[c] != '\0'; c++)
+	{
+		if (s[c] == ' ')
+			flag = 0;
+		else if (flag == 0)
+		{
+			flag = 1;
+			w++;
+		}
+	}
+
+	return (w);
+}
+/**
+ * **strtow - splits a string into words
+ * @str: string to split
+ *
+ * Return: pointer to an array of strings (Success)
+ * or NULL (Error)
+ */
 char **strtow(char *str)
 {
-	char *word, **words;
-	int i, j, k, len, word_count, curr_k = 0;
+	char **matrix, *tmp;
+	int i, k = 0, len = 0, words, c = 0, start, end;
 
-	if (str == NULL || *str == 0)
+	while (*(str + len))
+		len++;
+	words = count_word(str);
+	if (words == 0)
 		return (NULL);
 
-	word_count = count_words(str);
-	words = malloc(sizeof(word) * (word_count + 1));
-	if (words == NULL || word_count == 0)
+	matrix = (char **) malloc(sizeof(char *) * (words + 1));
+	if (matrix == NULL)
 		return (NULL);
 
-	for (i = 0; i < word_count; i++)
+	for (i = 0; i <= len; i++)
 	{
-		for (k = curr_k; str[k] != 0; k++)
+		if (str[i] == ' ' || str[i] == '\0')
 		{
-			if (str[k] != 32 && (k == 0 || str[k - 1] == 32))
+			if (c)
 			{
-				len = spacelen(str + k);
-				word = malloc(sizeof(char) * (len + 1));
-
-				if (word == NULL)
+				end = i;
+				tmp = (char *) malloc(sizeof(char) * (c + 1));
+				if (tmp == NULL)
 					return (NULL);
-
-				for (j = 0; j < len; j++)
-					word[j] = str[k + j];
-
-				word[j] = 0;
-				words[i] = word;
-				break;
+				while (start < end)
+					*tmp++ = str[start++];
+				*tmp = '\0';
+				matrix[k] = tmp - c;
+				k++;
+				c = 0;
 			}
 		}
-
-		curr_k = k + j;
+		else if (c++ == 0)
+			start = i;
 	}
 
-	words[i] = NULL;
-	return (words);
-}
+	matrix[k] = NULL;
 
-/**
- * count_words - counts words separated by spaces in a string
- * @s: string
- * Return: number of words in s
- */
-
-int count_words(char *s)
-{
-	int i, length;
-
-	length = 0;
-	for (i = 0; s[i] != 0; i++)
-	{
-		if ((s[i] != 32) && (s[i + 1] == 32 || s[i + 1] == 0))
-			length++;
-	}
-
-	return (length);
-}
-
-/**
- * spacelen - counts the length of a string using space instead of null
- * character
- * @s: string
- * Return: length of s (part)
- */
-
-int spacelen(char *s)
-{
-	int length;
-
-	length = 0;
-	while (s[length] != 32)
-		length++;
-
-	return (length);
+	return (matrix);
 }
